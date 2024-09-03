@@ -1,9 +1,19 @@
 'use client'
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleMouseEnter = () => setIsDropdownOpen(true);
+  const handleMouseLeave = () => setTimeout(() => {
+    if (!document.querySelector('.dropdown-menu:hover')) {
+      setIsDropdownOpen(false);
+    }
+  }, 100);
 
   return (
     <nav className="bg-blue-500 text-white shadow-md">
@@ -12,7 +22,7 @@ export default function Navbar() {
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setIsOpen(!isOpen)}
               aria-controls="mobile-menu"
               aria-expanded={isOpen}
@@ -37,16 +47,44 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:flex sm:ml-6">
               <div className="flex space-x-4">
-                <Link href="/" className="text-gray-300 hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                <Link href="/" className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/' ? 'bg-blue-700' : ''}`}>
                   Home
                 </Link>
-                <Link href="/about" className="text-gray-300 hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                <Link href="/about" className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/about' ? 'bg-blue-700' : ''}`}>
                   About
                 </Link>
-                <Link href="/blog" className="text-gray-300 hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                  Blog
-                </Link>
-                <Link href="/contact" className="text-gray-300 hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                <div
+                  className="relative"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button
+                    className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname.startsWith('/blog') || pathname === "/create_blog" ? 'bg-blue-700' : ''}`}
+                  >
+                    Blog
+                  </button>
+                  {isDropdownOpen && (
+                    <ul className="dropdown-menu absolute bg-gray-700 text-white mt-2 p-2 rounded-md shadow-lg w-48">
+                      <li>
+                        <Link
+                          href="/blogs"
+                          className={`block p-2 ${pathname === '/blogs' ? 'bg-blue-700' : ''}`}
+                        >
+                          All Blogs
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/create_blog"
+                          className={`block p-2 ${pathname === '/create_blog' ? 'bg-blue-700' : ''}`}
+                        >
+                          Create Blog
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+                <Link href="/contact" className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/contact' ? 'bg-blue-700' : ''}`}>
                   Contact
                 </Link>
               </div>
@@ -56,16 +94,29 @@ export default function Navbar() {
       </div>
       <div className={`${isOpen ? 'block' : 'hidden'} sm:hidden`} id="mobile-menu">
         <div className="px-2 pt-2 pb-3 space-y-1">
-          <Link href="/" className="text-gray-300 hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+          <Link href="/" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
             Home
           </Link>
-          <Link href="/about" className="text-gray-300 hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+          <Link href="/about" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
             About
           </Link>
-          <Link href="/blogs" className="text-gray-300 hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-            Blogs
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+          >
+            Blog
+          </button>
+          {isOpen && (
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <Link href="/blogs" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                All Blogs
+              </Link>
+              <Link href="/create_blog" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                Create Blog
+              </Link>
+            </div>
+          )}
+          <Link href="/contact" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
             Contact
           </Link>
         </div>
