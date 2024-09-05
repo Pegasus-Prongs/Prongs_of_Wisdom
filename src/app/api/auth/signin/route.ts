@@ -1,25 +1,32 @@
 // src/app/api/auth/signin/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { signIn } from 'next-auth/react';
-import { redirect } from 'next/navigation';
 
-export async function POST(req: NextRequest) {
-  const { username, password } = await req.json();
+import bcrypt from 'bcryptjs';
+import { NextResponse } from 'next/server';
+import connectToDatabase from '@/lib/mongodb';
+import User from '@/models/User';
 
+export async function POST(req: Request) {
   try {
-    const result = await signIn('credentials', {
-      redirect: false,
-      username,
-      password,
-    });
+    await connectToDatabase();
 
-    if (result?.error) {
-      // Handle authentication error
-      return NextResponse.json({ error: result.error }, { status: 401 });
+    const { username, password } = await req.json();
+
+    // Find user by email
+    const user = await User.findOne({ username: username });
+    console.log(user)
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Redirect to the home page or a protected route
-    return NextResponse.redirect('/protected');
+    // Check if password matches
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    // Return success response or token if needed
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Sign-in error:', error);
     return NextResponse.json({ error: 'An error occurred during sign-in' }, { status: 500 });

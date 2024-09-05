@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import connectToDatabase from '@/lib/mongodb';
@@ -14,11 +13,12 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log( credentials)
         await connectToDatabase();
 
         const user = await User.findOne({ username: credentials?.username });
-
-        if (user && bcrypt.compareSync(credentials?.password || '', user.password)) {
+        console.log("User===>", user);
+        if (user && bcrypt.compareSync(credentials?.password|| '', user.password)) {
           return { id: user._id, name: user.username };
         } else {
           return null;
@@ -29,7 +29,7 @@ export const authOptions = {
   pages: {
     signIn: '/auth/signin', // Customize the sign-in page route
     // Optionally, add signUp page route if needed
-    // signUp: '/auth/signup',
+    signUp: '/auth/signup',
   },
   session: {
     strategy: 'jwt',

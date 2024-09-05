@@ -87,6 +87,12 @@ export default function Navbar() {
                 <Link href="/contact" className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/contact' ? 'bg-blue-700' : ''}`}>
                   Contact
                 </Link>
+                <Link href="/auth/signin" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                  Log In
+                </Link>
+                <Link href="/auth/signup" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                  Sign Up
+                </Link>
               </div>
             </div>
           </div>
@@ -118,6 +124,12 @@ export default function Navbar() {
           )}
           <Link href="/contact" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
             Contact
+          </Link>
+          <Link href="/auth/signin" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+            Log In
+          </Link>
+          <Link href="/auth/signup" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+            Sign Up
           </Link>
         </div>
       </div>

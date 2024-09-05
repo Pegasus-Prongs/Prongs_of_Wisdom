@@ -19,8 +19,8 @@ export default function SignUp() {
     setErrorMessage(null); // Clear previous errors
 
     try {
-      const hashedPassword = bcrypt.hashSync(password, 10);
-      await axios.post('/api/auth/signup', { username, password: hashedPassword });
+      // const hashedPassword = bcrypt.hashSync(password, 10);
+      await axios.post('/api/auth/signup', { username, password: password });
       router.push('/auth/signin');
     } catch (error) {
       setErrorMessage('Sign-up failed. Please try again.');
