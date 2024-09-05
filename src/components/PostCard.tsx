@@ -13,15 +13,15 @@ const PostCard  = ({ id, title, content}: PostCardProps) => {
         return text.length > limit ? text.substring(0, limit) + "..." : text;
     };
 
-
     return (
-        <div className=" p-4 border rounded-lg shadow-md bg-white">
-            <Link className="text-3xl font-bold mb-2" href={`/blog/${id}`}>{title}</Link>
-            <div
-                className="text-gray-800"
-                dangerouslySetInnerHTML={{ __html: truncateContent(content, 300) }} // Show only 300 characters
-            />
-            <Link href={`/blog/${id}`} className="text-blue-500 hover:underline">
+        <div className="relative p-6 border border-gray-200 rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-300">
+            <Link href={`/blog/${id}`} className="block text-2xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
+                {title}
+            </Link>
+            <p className="mt-2 mb-4 text-gray-700 text-sm">
+                {truncateContent(content, 300)}
+            </p>
+            <Link href={`/blog/${id}`} className="absolute bottom-4 right-6 text-blue-500 hover:underline font-medium text-sm">
                 Read more
             </Link>
         </div>
