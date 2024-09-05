@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -87,15 +87,26 @@ export default function Navbar() {
                 <Link href="/contact" className={`text-gray-300 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/contact' ? 'bg-blue-700' : ''}`}>
                   Contact
                 </Link>
-                <Link href="/auth/signin" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-                  Log In
-                </Link>
-                <Link href="/auth/signup" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-                  Sign Up
-                </Link>
+
               </div>
             </div>
           </div>
+          {/* Right-Side Buttons */}
+          <div className="absolute inset-y-0 right-0 flex items-center space-x-4">
+            <Link
+              href="/auth/signin"
+              className=" bg-gradient-to-r border-2 border-white from-blue-400 to-blue-600 text-white px-4 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="bg-gradient-to-r border-2 border-white from-teal-400 to-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out"
+            >
+              Sign Up
+            </Link>
+          </div>
+
         </div>
       </div>
       <div className={`${isOpen ? 'block' : 'hidden'} sm:hidden`} id="mobile-menu">
@@ -125,10 +136,10 @@ export default function Navbar() {
           <Link href="/contact" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
             Contact
           </Link>
-          <Link href="/auth/signin" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+          <Link href="/auth/signin" className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-2 rounded-full shadow-md block">
             Log In
           </Link>
-          <Link href="/auth/signup" className="text-gray-300 hover:bg-blue-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+          <Link href="/auth/signup" className="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-4 py-2 rounded-full shadow-md block">
             Sign Up
           </Link>
         </div>
