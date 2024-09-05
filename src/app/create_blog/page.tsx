@@ -1,19 +1,44 @@
 'use client'
-import exp from 'constants';
 import dynamic from 'next/dynamic';
 // import MyEditor from "@/components/MyEditor";
 import React, { useState } from "react";
 const MyEditor = dynamic(() => import('@/components/MyEditor'), {
     ssr: false, // Disable server-side rendering
 });
+import { useRouter } from 'next/navigation';
 
 const CreateBlog = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const router = useRouter();
+
+    const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!title || !content) {
+            alert("Please enter a title and content");
+            return;
+        }
+        try {
+            const res = await fetch('/api/blog/', {  // Replace with your API route
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ title, content }), // Send the data as JSON
+            });
+      
+            const result = await res.json();
+            console.log(result)
+            router.push('/blogs')
+          } catch (error) {
+            console.error('Error posting data:', error);
+          }
+    }
+
     return (
-        <div className="container mx-auto p-6">
+        <div className="container max-w-4xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Create a New Blog Post</h1>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleOnSubmit }>
                 {/* Title Input */}
                 <div className="flex flex-col">
                     <label htmlFor="title" className="text-lg font-medium text-gray-700 mb-2">Title</label>
