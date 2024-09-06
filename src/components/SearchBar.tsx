@@ -1,20 +1,32 @@
 'use client'
 import React, { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface SearchBarProps {
     className?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const searchParams = useSearchParams()
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('query') || '');
+    const pathname = usePathname();
+    const { replace } = useRouter();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
     };
 
     const handleSearch = () => {
+        const params = new URLSearchParams(searchParams);
+        console.log(params.toString());
+        if (searchQuery) {
+            params.set('query', searchQuery);
+        } else {
+            params.delete('query');
+        }
+        console.log(params.toString());
+        replace(`${pathname}?${params.toString()}`);
         // Implement search logic here
-        console.log(`Searching for: ${searchQuery}`);
     };
 
     return (
