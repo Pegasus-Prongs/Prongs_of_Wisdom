@@ -1,10 +1,9 @@
 // src/app/auth/signup/page.tsx
 "use client";
-
+import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
 
 export default function SignUp() {
   const [username, setUsername] = useState('');
