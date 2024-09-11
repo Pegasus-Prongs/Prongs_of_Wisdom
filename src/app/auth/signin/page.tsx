@@ -1,7 +1,7 @@
 // src/app/auth/signin/page.tsx
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
@@ -19,11 +19,11 @@ export default function SignIn() {
       password,
     });
 
-    if (result?.error) {
-      setErrorMessage("Invalid username or password");
-    } else {
-      // window.location.href = "/";
-    }
+    // if (result?.error) {
+    //   setErrorMessage("Invalid username or password");
+    // } else {
+    //   // window.location.href = "/";
+    // }
   };
 
   return (
