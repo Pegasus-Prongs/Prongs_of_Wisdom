@@ -18,7 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className }) => {
 
     const handleSearch = () => {
         const params = new URLSearchParams(searchParams);
-        console.log(params.toString());
+        params.set('page', '1');
         if (searchQuery) {
             params.set('query', searchQuery);
         } else {
