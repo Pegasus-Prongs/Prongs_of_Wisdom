@@ -14,7 +14,7 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log(credentials);
+        console.log("Credentials===>", credentials);
         await connectToDatabase();
 
         const user = await User.findOne({ username: credentials?.username });
@@ -22,7 +22,7 @@ export const authOptions = {
         if (user && bcrypt.compareSync(credentials?.password || '', user.password)) {
           return { id: user._id, name: user.username };
         } else {
-          return null;
+          throw new Error('Invalid username or password'); 
         }
       },
     }),
