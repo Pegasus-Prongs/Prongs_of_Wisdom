@@ -21,7 +21,9 @@ export default function Navbar() {
   }, [pathname])
 
   return (
-    <nav className="bg-blue-500 text-white shadow-md sticky top-0 z-50">
+    <nav className="bg-blue-500 bg-opacity-90 text-white shadow-md sticky top-0 z-50"
+    style={{  backdropFilter: 'blur(8px)' }}
+    >
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
