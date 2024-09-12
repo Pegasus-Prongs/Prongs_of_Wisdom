@@ -1,5 +1,7 @@
 'use client'
-import React, { useState, ReactNode, Children } from 'react';
+'use client'
+import React, { useState, ReactNode, Children, useEffect } from 'react';
+import CarouselItem from './CarouselItem';
 
 interface CarouselProps {
   children: ReactNode;
@@ -7,6 +9,7 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = ({ children }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const autoPlayInterval = 3000; // Interval for auto-play in milliseconds
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % Children.count(children));
@@ -16,13 +19,24 @@ const Carousel: React.FC<CarouselProps> = ({ children }) => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + Children.count(children)) % Children.count(children));
   };
 
+  useEffect(() => {
+    const interval = setInterval(nextSlide, autoPlayInterval);
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [currentIndex]);
+
   return (
     <div className="relative w-full max-w-6xl mx-auto overflow-hidden rounded-lg border border-white bg-white shadow-lg">
       {/* Carousel Items */}
       <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {Children.map(children, (child, index) => (
           <div className="flex-shrink-0 w-full" key={index}>
-            {child}
+            {React.cloneElement(child as React.ReactElement<any>, {
+              animation: {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 },
+                transition: { duration: 0.5, delay: index * 0.2 }
+              }
+            })}
           </div>
         ))}
       </div>
