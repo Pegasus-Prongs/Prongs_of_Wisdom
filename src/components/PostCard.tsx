@@ -3,17 +3,11 @@ import BlogPost from "@/app/api/blog/blogpost.types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import DOMPurify from 'dompurify';
+import truncate from 'html-truncate';
 import Chip from "@/components/Chip";
 import { formatFirestoreTimestamp } from "@/utils/helper";
 
 const PostCard = ({ id, title, content, image, author, timestamp, tags }: BlogPost) => {
-
-    const truncateContent = (text: string, limit: number) => {
-        return text.length > limit ? text.substring(0, limit) + "..." : text;
-    };
-
-    const sanitizedContent = DOMPurify.sanitize(truncateContent(content, 100));
 
     return (
         <div className="relative pb-20 border border-gray-200 rounded-lg shadow-lg bg-white transition-transform transform hover:shadow-xl duration-300">
@@ -23,7 +17,7 @@ const PostCard = ({ id, title, content, image, author, timestamp, tags }: BlogPo
                 <Link href={`/blog/${id}`} className="block text-2xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
                     {title}
                 </Link>
-                <div className="mb-6 text-gray-700 text-sm mt-5" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
+                <div className="mb-6 text-gray-700 text-sm mt-5" dangerouslySetInnerHTML={{ __html: truncate(content, 100) }} />
 
                 {/* Tag List */}
                 {tags && tags.length > 0 && (
