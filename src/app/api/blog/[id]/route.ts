@@ -1,6 +1,8 @@
 // app/api/blog/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { doc, getDoc } from 'firebase/firestore'; // Import required Firestore functions
+// import { collection,where, getDocs, query, orderBy } from 'firebase/firestore'; // Import required Firestore functions
+
+import { doc, getDoc, collection, where } from 'firebase/firestore'; // Import required Firestore functions
 import { db as clientDb } from '@/lib/firebase'; // Import client Firestore
 
 // GET handler to fetch a blog post by ID
@@ -16,7 +18,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     // Check if the document exists
     if (postDoc.exists()) {
-      const postData = { id: postDoc.id, ...postDoc.data() }; // Combine the ID with the document data
+      const userRef = doc(clientDb, 'users', postDoc.data().user_id);
+      const userDoc = await getDoc(userRef);
+      const postData = { id: postDoc.id, ...postDoc.data(), author: userDoc.data() }; // Combine the ID with the document data
+      
       return NextResponse.json(postData); // Return the post if found
     } else {
       return NextResponse.json({ error: 'Blog post not found' }, { status: 404 }); // Return 404 if not found
