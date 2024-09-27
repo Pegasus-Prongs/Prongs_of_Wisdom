@@ -13,7 +13,7 @@ export default function Home() {
         
         <Introduction></Introduction>
         <EaseOutAnimation>
-          <PopularLatestPosts />
+          {/* <PopularLatestPosts /> */}
         </EaseOutAnimation>
 
         <Analysis />

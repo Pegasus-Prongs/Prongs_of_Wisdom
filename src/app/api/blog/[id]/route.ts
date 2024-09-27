@@ -1,15 +1,28 @@
 // app/api/blog/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import blogPosts from '../blogs';
+import { doc, getDoc } from 'firebase/firestore'; // Import required Firestore functions
+import { db as clientDb } from '@/lib/firebase'; // Import client Firestore
 
 // GET handler to fetch a blog post by ID
-export async function GET(request: NextRequest, { params }: { params: { id: number } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
-  // Find the blog post with the matching ID
-  const post = blogPosts.find(post => post.id === parseInt(id as unknown as string));
-  if (post) {
-    return NextResponse.json(post); // Return the post if found
-  } else {
-    return NextResponse.json({ error: 'Blog post not found' }, { status: 404 }); // Return 404 if not found
+
+  try {
+    // Create a reference to the blog post document in Firestore
+    const postRef = doc(clientDb, 'blogPosts', id);
+    
+    // Fetch the document
+    const postDoc = await getDoc(postRef);
+
+    // Check if the document exists
+    if (postDoc.exists()) {
+      const postData = { id: postDoc.id, ...postDoc.data() }; // Combine the ID with the document data
+      return NextResponse.json(postData); // Return the post if found
+    } else {
+      return NextResponse.json({ error: 'Blog post not found' }, { status: 404 }); // Return 404 if not found
+    }
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    return NextResponse.json({ error: 'An error occurred while fetching the blog post.' }, { status: 500 }); // Handle errors
   }
 }

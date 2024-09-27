@@ -1,37 +1,56 @@
-// components/Pagination.js
-'use client'
+'use client';
 import React from 'react';
-
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function Pagination({ totalPage }) {
+interface PaginationProps {
+    totalPage: number;
+}
+
+const Pagination: React.FC<PaginationProps> = ({ totalPage }) => {
     const pathname = usePathname();
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const currentPage = Number(searchParams.get('page')) || 1;
 
-    const handleClick = (page) => {
+    // Handle click event for pagination
+    const handleClick = (page : number) => {
         if (page > 0 && page <= totalPage) {
             const params = new URLSearchParams(searchParams);
             params.set('page', page.toString());
             replace(`${pathname}?${params.toString()}`);
         }
     };
+
+    // Render the page numbers based on total pages
     const renderPageNumbers = () => {
         const range = [];
         const startPage = Math.max(2, currentPage - 2);
         const endPage = Math.min(totalPage - 1, currentPage + 2);
 
+        // Always push the first page
         range.push(1);
+        
+        // Add ellipsis if there are pages between 1 and the startPage
         if (startPage > 2) range.push('...');
+
+        // Add the pages in the range
         for (let i = startPage; i <= endPage; i++) {
             range.push(i);
         }
+
+        // Add ellipsis if there are pages between endPage and the last page
         if (endPage < totalPage - 1) range.push('...');
-        range.push(totalPage);
+
+        // Always push the last page if it's not already included
+        if (totalPage > 1) range.push(totalPage);
 
         return range;
     };
+
+    // Conditional rendering based on total pages
+    if (totalPage <= 1) {
+        return null; // or <div>No more pages</div>; depending on your preference
+    }
 
     return (
         <div className="flex justify-center items-center mt-4">
@@ -69,7 +88,5 @@ export default function Pagination({ totalPage }) {
         </div>
     );
 }
-function replace(arg0: string) {
-    throw new Error('Function not implemented.');
-}
 
+export default Pagination;

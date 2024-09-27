@@ -1,30 +1,60 @@
+'use client';
 import BlogPost from "@/app/api/blog/blogpost.types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import DOMPurify from 'dompurify';
+import Chip from "@/components/Chip";
+import { formatFirestoreTimestamp } from "@/utils/helper";
 
-const PostCard = ({ id, title, content }: BlogPost) => {
+const PostCard = ({ id, title, content, image, author, timestamp, tags }: BlogPost) => {
 
     const truncateContent = (text: string, limit: number) => {
         return text.length > limit ? text.substring(0, limit) + "..." : text;
     };
 
-    return (
-        <div className="relative border border-gray-200 rounded-lg shadow-lg bg-white hover:shadow-xl duration-300 transform transition-transform hover:scale-105">
-            <Image src="/slider_bg.png" className="w-full rounded-t-lg" width="100" height={1010} alt="Image for blog" />
+    const sanitizedContent = DOMPurify.sanitize(truncateContent(content, 100));
 
-            <div className="p-4">
+    return (
+        <div className="relative pb-20 border border-gray-200 rounded-lg shadow-lg bg-white transition-transform transform hover:shadow-xl duration-300">
+            <Image src={image} className="w-full rounded-t-lg aspect-[16/16]" width={1000} height={1000} alt="Image for blog" />
+
+            <div className="px-4 py-6">
                 <Link href={`/blog/${id}`} className="block text-2xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
                     {title}
                 </Link>
+                <div className="mb-6 text-gray-700 text-sm mt-5" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
 
-                <div className="mb-6 text-gray-700 text-sm mt-5" dangerouslySetInnerHTML={{ __html: truncateContent(content, 300) }} />
-                <Link href={`/blog/${id}`} className="absolute bottom-4 right-6 text-blue-500 hover:underline font-medium text-sm">
-                    Read more
-                </Link>
+                {/* Tag List */}
+                {tags && tags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap">
+                        {tags.map((tag, index) => (
+                            <Chip key={'chip-' + index} label={tag} />
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className="p-4 text-gray-700 absolute bottom-2">
+                <div className="flex items-center">
+                    {/* Author Avatar */}
+                    <Image
+                        src={author.avatar}
+                        alt={`${author.name}'s avatar`}
+                        width={72}
+                        height={72}
+                        className="h-8 w-8 rounded-full mr-2"
+                    />
+                    <div className="flex flex-col">
+                        <span className="font-medium text-lg">{author.name}</span>
+                        <span className="text-gray-500 text-sm">{author.email}</span>
+                    </div>
+                </div>
+                <div className="text-gray-500 text-xs mt-4">
+                    <span>{formatFirestoreTimestamp(timestamp)}</span>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default PostCard;
