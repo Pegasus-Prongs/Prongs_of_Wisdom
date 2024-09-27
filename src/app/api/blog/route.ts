@@ -58,43 +58,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// export async function GET(request: NextRequest) {
-//   try {
-//     // Parse the query parameters from the request URL
-//     const url = new URL(request.url);
-//     const queryParam = url.searchParams.get('query') || '';
-//     const page = Number(url.searchParams.get('page')) || 1;
-
-//     if (page < 1) {
-//       throw new Error('Invalid page number');
-//     }
-
-//     // Introduce a delay of 3 seconds
-//     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-//     await delay(1000);
-
-//     // Define your Firestore query
-//     const postsRef = collection(clientDb, 'blogPosts'); // Reference to your 'blogPosts' collection
-//     const postsQuery = query(
-//       postsRef,
-//       orderBy('timestamp', 'desc'), // Order by timestamp (newest first)
-//     );
-
-//     const querySnapshot = await getDocs(postsQuery);
-//     const filteredPosts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//     const results = queryParam
-//       ? filteredPosts.filter(post =>
-//         post.title.toLowerCase().includes(queryParam.toLowerCase()) ||
-//         post.content.toLowerCase().includes(queryParam.toLowerCase())
-//       )
-//       : filteredPosts;
-//     return NextResponse.json({blogPosts: results.slice(12 * (page - 1), 12 * page), totalPage: Math.ceil(results.length / 12)});
-//   } catch (error) {
-//     console.error('Error in GET handler:', error);
-//     return NextResponse.json({ error: error.message }, { status: 500 });
-//   }
-// }
-
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const { title, content, image, tags, user_id } = data;
