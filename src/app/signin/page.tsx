@@ -1,65 +1,16 @@
 // pages/signin.js
 'use client'
-import React, { useEffect, useState } from "react";
-
-import { useRouter } from 'next/navigation';
-
-import { auth, googleProvider, db } from "@/lib/firebase";
-import { signInWithPopup } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import React from "react";
+import { useUserContext } from '@/context/UserContext';
 import { FcGoogle } from 'react-icons/fc';
 
 const SignIn = () => {
 
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const { user, login, loading, error } = useUserContext();
 
     const handleGoogleSignIn = async () => {
-        setLoading(true);
-        setError(""); // Reset any previous errors
-
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-
-            // Reference to the user's document in Firestore
-            const userRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userRef);
-
-            // Check if user data exists in Firestore
-            if (!userDoc.exists()) {
-                // User data from Google
-                const userData = {
-                    uid: user.uid,
-                    name: user.displayName,
-                    email: user.email,
-                    avatar: user.photoURL,
-                };
-
-                // Save user data to Firestore
-                await setDoc(userRef, userData);
-                console.log("User signed in and data saved:", userData);
-            } else {
-                console.log("User already exists in Firestore:", userDoc.data());
-            }
-            router.push('/');
-        } catch (error) {
-            console.error("Error signing in:", error);
-            setError("Failed to sign in. Please try again.");
-        } finally {
-            setLoading(false);
-        }
+        login();
     };
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log("User is already signed in:", user);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
 
     return (
         <div className="flex items-center justify-center min-h-96 p-24">
