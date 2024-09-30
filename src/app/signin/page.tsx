@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
 import { auth, googleProvider, db } from "@/lib/firebase";
-import { adminDb } from '@/lib/firebase_admin'; // Import admin Firestore
 import { signInWithPopup } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { FcGoogle } from 'react-icons/fc';
