@@ -15,7 +15,7 @@ const VoteComment: React.FC = ({ blog_id }: { blog_id: string }) => {
     useEffect(() => {
         const fetchVotes = async () => {
             const response = await axios.get(`http://localhost:3000/api/blog/${blog_id}/vote`);
-            
+
         }
 
         fetchVotes();
