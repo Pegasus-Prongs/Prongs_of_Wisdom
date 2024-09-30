@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 // import { collection,where, getDocs, query, orderBy } from 'firebase/firestore'; // Import required Firestore functions
 
-import { doc, getDoc, collection, where } from 'firebase/firestore'; // Import required Firestore functions
+import { doc, getDoc } from 'firebase/firestore'; // Import required Firestore functions
 import { db as clientDb } from '@/lib/firebase'; // Import client Firestore
 
 // GET handler to fetch a blog post by ID
