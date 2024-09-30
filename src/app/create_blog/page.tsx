@@ -1,12 +1,12 @@
 // pages/createBlog.tsx
 'use client'
 import dynamic from 'next/dynamic';
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
+
+import { useUserContext } from '@/context/UserContext';
 import { storage } from '@/lib/firebase'; // Ensure Firebase storage is initialized
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth } from '@/lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid'; // For generating unique filenames
 import Chip from '@/components/Chip'; // Import the Chip component
 
@@ -15,6 +15,7 @@ const MyEditor = dynamic(() => import('@/components/MyEditor'), {
 });
 
 const CreateBlog = () => {
+  const { user } = useUserContext();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -22,20 +23,7 @@ const CreateBlog = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const router = useRouter();
-  const [user, setUser] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
