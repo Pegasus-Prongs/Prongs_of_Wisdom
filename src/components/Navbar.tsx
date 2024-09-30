@@ -5,18 +5,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { usePathname } from 'next/navigation';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase'; // Adjust the path as necessary
-import { doc, getDoc } from "firebase/firestore";
+import { useUserContext } from '@/context/UserContext';
 
 export default function Navbar() {
+  const { user, logout } = useUserContext();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null); // State for additional user data
-  const accountRef = useRef(null);
+  const accountRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
   const handleMouseEnter = () => setIsDropdownOpen(true);
@@ -31,33 +28,10 @@ export default function Navbar() {
     setIsDropdownOpen(false);
   }, [pathname]);
 
-  useEffect(  ()  => {
-    const unsubscribe =  onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        // Get user data from Firestore
-        const userDocRef = doc(db, "users", user.uid); // Assuming 'users' is your collection name
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          setUserData(userDoc.data()); // Set the additional user data
-          console.log("User data from Firestore:", userDoc.data());
-        } else {
-          console.log("No user data found in Firestore for UID:", user.uid);
-        }
-      } else {
-        setUser(null);
-        setUserData(null); // Clear user data when user is logged out
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   useEffect(() => {
     // Handle click outside to close dropdowns
-    const handleClickOutside = (event) => {
-      if (accountRef.current && !accountRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
         setIsAccountOpen(false);
       }
     };
@@ -67,13 +41,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setSuccess('Successfully logged out!');
-    } catch (error) {
-      setError('Error signing out.');
-      console.error('Error signing out:', error);
-    }
+    logout();
   };
 
   const handleLogin = async () => {
@@ -152,9 +120,9 @@ export default function Navbar() {
             </div>
 
             {/* User Info and Dropdown */}
-            <div 
-            className="absolute inset-y-0 right-0 flex items-center space-x-4 hidden md:flex"
-            ref={accountRef}>
+            <div
+              className="absolute inset-y-0 right-0 items-center space-x-4 hidden md:flex"
+              ref={accountRef}>
               {user ? (
                 <div className="relative flex items-center group">
                   {/* User Avatar and Info */}
@@ -163,8 +131,8 @@ export default function Navbar() {
                     onClick={() => setIsAccountOpen(!isAccountOpen)}
                   >
                     <Image
-                      src={userData?.avatar || 'https://via.placeholder.com/40'}
-                      alt={userData?.name || 'User'}
+                      src={user?.avatar || 'https://via.placeholder.com/40'}
+                      alt={user?.name || 'User'}
                       width={40}
                       height={40}
                       className="w-10 h-10 rounded-full border-2 border-gray-300"
@@ -176,15 +144,15 @@ export default function Navbar() {
                     <ul className="flex flex-col absolute right-0 top-12 bg-gray-800 text-white rounded-lg shadow-lg z-20 min-w-[250px]">
                       <li className="px-4 py-3 flex items-center space-x-3 border-b border-gray-700">
                         <Image
-                          src={userData?.avatar || 'https://via.placeholder.com/40'}
-                          alt={userData?.name || 'User'}
+                          src={user?.avatar || 'https://via.placeholder.com/40'}
+                          alt={user?.name || 'User'}
                           width={40}
                           height={40}
                           className="w-10 h-10 rounded-full"
                         />
                         <div className="flex flex-col ml-2">
-                          <p className="flex-1 font-medium">{userData?.name || 'User'}</p>
-                          <p className="flex-1 text-sm text-gray-400">{userData?.email}</p>
+                          <p className="flex-1 font-medium">{user?.name || 'User'}</p>
+                          <p className="flex-1 text-sm text-gray-400">{user?.email}</p>
                         </div>
                       </li>
                       <li>
@@ -200,11 +168,11 @@ export default function Navbar() {
                 </div>
               ) : (
                 <button
-      onClick={handleLogin}
-      className="flex items-center bg-gradient-to-r from-blue-200 to-blue-400 text-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out"
-    >
-      Log In
-    </button>
+                  onClick={handleLogin}
+                  className="flex items-center bg-gradient-to-r from-blue-200 to-blue-400 text-gray-800 px-4 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out"
+                >
+                  Log In
+                </button>
               )}
             </div>
           </div>
