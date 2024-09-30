@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const usersQuery = query(usersRef, where('uid', 'in', userIds)); // Query for users based on user_ids
     const userSnapshot = await getDocs(usersQuery);
     
-    const usersData: any = {};
+    const usersData: unknown[] = [];
     userSnapshot.docs.forEach(doc => {
       const user = doc.data();
       usersData[user.uid] = { name: user.name, email: user.email, id: user.uid , avatar: user.avatar,}; // Store user data by uid
