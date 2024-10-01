@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaThumbsUp, FaThumbsDown, FaRegThumbsUp, FaRegThumbsDown } from 'react-icons/fa';
 
 interface VoteButtonProps {
@@ -21,10 +21,10 @@ const VoteButton: React.FC<VoteButtonProps> = ({ voteType, onVote, isSelected })
         >
             {voteType === 'Upvote'
                 ? isSelected
-                    ? <FaThumbsUp color="green" />  // Filled when selected
+                    ? <FaThumbsUp color="gray" />  // Filled when selected
                     : <FaRegThumbsUp color="gray" /> // Outlined when not selected
                 : isSelected
-                    ? <FaThumbsDown color="red" />  // Filled when selected
+                    ? <FaThumbsDown color="gray" />  // Filled when selected
                     : <FaRegThumbsDown color="gray" /> // Outlined when not selected
             }
         </button>
