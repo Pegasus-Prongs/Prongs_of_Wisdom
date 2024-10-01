@@ -1,7 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import axios from 'axios';
+import Chip from "@/components/Chip";
+import { FaUserAlt, FaEnvelope, FaTag } from 'react-icons/fa';
 import type BlogPost from "@/app/api/blog/blogpost.types"; // Import with type-only import
+import VoteComment from "./VoteComment";
 
 async function getBlogPost(id: string): Promise<BlogPost | null> {
     console.log("ID ===> ", id);
@@ -22,6 +25,30 @@ const BlogPost = async ({ params }: { params: { id: string } }) => {
             {blogPost ? (
                 <>
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{blogPost.title}</h1>
+                    {/* Render author name and email with icons */}
+                    <div className="flex flex-row items-center py-2">
+                        <div className="flex items-center text-gray-600 text-md pr-4">
+                            <FaUserAlt className="mr-2 text-lg" />
+                            <span className="font-semibold">{blogPost.author.name}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600 text-md">
+                            <FaEnvelope className="mr-2 text-lg" />
+                            <span className="text-blue-600">{blogPost.author.email}</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center py-2">
+                        <FaTag className="mr-2 text-lg text-gray-600" />
+                        <p className="text-gray-600 text-md">Tags:</p>
+                    </div>
+                    <div>
+                        {blogPost.tags && blogPost.tags.length > 0 && (
+                            <div className="mt-4 flex flex-wrap">
+                                {blogPost.tags.map((tag, index) => (
+                                    <Chip key={'chip-' + index} label={tag} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     {blogPost.image && (
                         <Image
                             width={1010}
@@ -35,6 +62,9 @@ const BlogPost = async ({ params }: { params: { id: string } }) => {
                         className="text-gray-700 text-lg leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: blogPost.content }} // Render blog content
                     />
+
+                    <hr className="border-gray-300 my-2 w-full" />
+                    <VoteComment blog_id={params.id} />
                 </>
             ) : (
                 <p className="text-center text-gray-500">Loading...</p>
