@@ -37,12 +37,12 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { id } = params;
     const data = await request.json();
     const { user_id, vote } = data;
-    const voteData = { user_id, vote, blog_id: id };
+    const voteData = { user_id, vote, to_id: id, isBlog: true };
     const blogRef = doc(clientDb, 'blogPosts', id);
     try {
         const docRef = await addDoc(collection(clientDb, 'votes'), voteData);
         const blogDoc = await getDoc(blogRef);
-        const voteCount = blogDoc.voteCount + (vote === 1 ? 1 : -1);
+        const voteCount = blogDoc.data()?.voteCount + (vote === 1 ? 1 : -1);
         await setDoc(blogRef, {
             voteCount,
             ...blogDoc,
