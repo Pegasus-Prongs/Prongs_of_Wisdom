@@ -52,6 +52,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const userDocRef = doc(db, "users", user.uid); // Assuming 'users' is your collection name
                 const userDoc = await getDoc(userDocRef);
                 const accessToken = await user.getIdToken();
+                console.log(accessToken);
                 if (userDoc.exists()) {
                     const userData: IUserData = userDoc.data() as IUserData; // Assuming your user document has 'name', 'avatar', and 'email' fields
                     setUser({

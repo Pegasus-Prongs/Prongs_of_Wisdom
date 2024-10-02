@@ -3,14 +3,14 @@ import { FaThumbsUp, FaThumbsDown, FaRegThumbsUp, FaRegThumbsDown } from 'react-
 
 interface VoteButtonProps {
     voteType: string;
-    onVote: (vote: string) => void;
+    onVote: () => void;
     isSelected: boolean;
 }
 
 const VoteButton: React.FC<VoteButtonProps> = ({ voteType, onVote, isSelected }) => {
     return (
         <button
-            onClick={() => onVote(voteType)}
+            onClick={() => onVote()}
             style={{
                 backgroundColor: 'transparent', // No background for icon buttons
                 border: 'none',

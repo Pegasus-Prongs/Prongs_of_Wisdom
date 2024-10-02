@@ -39,10 +39,8 @@ const BlogPost = async ({ params }: { params: { id: string } }) => {
                     <div className="flex items-center py-2">
                         <FaTag className="mr-2 text-lg text-gray-600" />
                         <p className="text-gray-600 text-md">Tags:</p>
-                    </div>
-                    <div>
                         {blogPost.tags && blogPost.tags.length > 0 && (
-                            <div className="mt-4 flex flex-wrap">
+                            <div className="mt-2 flex flex-wrap">
                                 {blogPost.tags.map((tag, index) => (
                                     <Chip key={'chip-' + index} label={tag} />
                                 ))}
